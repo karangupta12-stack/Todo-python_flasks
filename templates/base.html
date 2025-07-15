@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %} {% endblock title %} -My Todo List</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">MyTodo</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="/about"
+                >About</a
+              >
+            </li>
+          </ul>
+
+          <form class="d-flex" role="search" onsubmit="return false;">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+              id="searchInput"
+              onkeyup="searchTable()"
+            />
+            <button class="btn btn-outline-dark" type="button" onclick="searchTable()">Search</button>
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div
+        id="searchResults"
+        class="alert alert-info"
+        style="display: none; margin-top: 10px"
+      >
+        <span id="searchResultsText"></span>
+      </div>
+    </div>
+
+    {% block body %} {% endblock body %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      console.log("JavaScript loaded successfully");
+
+      function searchTable() {
+        const input = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const table = document.getElementById("todoTable");
+        const searchResults = document.getElementById("searchResults");
+        const searchResultsText = document.getElementById("searchResultsText");
+
+        if (!table) return;
+
+        const rows = table.getElementsByTagName("tr");
+        let visibleRows = 0;
+
+        for (let i = 1; i < rows.length; i++) {
+          const cells = rows[i].getElementsByTagName("td");
+          const titleCell = cells[0];
+          const descCell = cells[1];
+
+          if (titleCell && descCell) {
+            const titleText = titleCell.innerText.toLowerCase();
+            const descText = descCell.innerText.toLowerCase();
+
+            const isVisible =
+              titleText.includes(input) || descText.includes(input);
+
+            rows[i].style.display = isVisible ? "" : "none";
+
+            if (isVisible) {
+              visibleRows++;
+            }
+          }
+        }
+
+        if (searchResults && searchResultsText) {
+          if (input.trim() !== "") {
+            searchResults.style.display = "block";
+            if (visibleRows === 0) {
+              searchResultsText.textContent = `No todos found matching "${input}"`;
+              searchResults.className = "alert alert-warning";
+            } else {
+              searchResultsText.textContent = `Found ${visibleRows} todo${
+                visibleRows !== 1 ? "s" : ""
+              } matching "${input}"`;
+              searchResults.className = "alert alert-info";
+            }
+          } else {
+            searchResults.style.display = "none";
+          }
+        }
+      }
+    </script>
+  </body>
+</html>
