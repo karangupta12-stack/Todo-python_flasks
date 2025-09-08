@@ -4,8 +4,21 @@
     box-sizing: border-box;
 }
 
+:root {
+    --primary-500: #667eea;
+    --primary-600: #5a67d8;
+    --secondary-500: #764ba2;
+    --accent-500: #10b981;
+    --danger-500: #dc3545;
+    --success-500: #28a745;
+    --neutral-900: #111827;
+    --neutral-700: #374151;
+    --neutral-500: #6b7280;
+    --neutral-100: #f3f4f6;
+}
+
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--primary-500) 0%, var(--secondary-500) 100%);
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     padding: 20px 0;
@@ -25,6 +38,11 @@ body {
     font-size: 1.5rem;
 }
 
+.navbar-brand:hover {
+    color: var(--primary-600) !important;
+    text-shadow: 0 2px 12px rgba(102, 126, 234, 0.35);
+}
+
 .navbar-nav .nav-link {
     color: #33373b !important;
     font-weight: 500;
@@ -32,9 +50,21 @@ body {
 }
 
 .navbar-nav .nav-link:hover {
-    color: #667eea !important;
+    color: var(--primary-500) !important;
     transform: translateY(-3px);
    transition: 0.5s;
+}
+
+.navbar-toggler {
+    border-color: rgba(0,0,0,0.2);
+}
+
+.navbar-toggler:focus {
+    box-shadow: 0 0 0 0.15rem rgba(102, 126, 234, 0.35);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(55,65,81,0.95)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 /* Container Styling */
@@ -100,6 +130,13 @@ h2::after {
     background: white;
 }
 
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    background: #ffffff;
+}
+
 /* Button Styling */
 .btn {
     border-radius: 25px;
@@ -117,21 +154,35 @@ h2::after {
 
 .btn-outline-primary {
     background: transparent;
-    border: 2px solid #667eea;
-    color: #667eea;
+    border: 2px solid var(--primary-500);
+    color: var(--primary-500);
 }
 
 .btn-outline-primary:hover {
-    background: #667eea;
+    background: var(--primary-500);
     color: white;
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
+/* Solid primary button override */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-500), var(--secondary-500));
+    border: none;
+    color: #ffffff;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.35);
+}
+
+.btn-primary:hover {
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(102, 126, 234, 0.45);
+}
+
 .btn-outline-success {
     background: transparent;
-    border: 2px solid #28a745;
-    color: #28a745;
+    border: 2px solid var(--success-500);
+    color: var(--success-500);
     font-size: 12px;
     padding: 8px 15px;
 }
@@ -145,8 +196,8 @@ h2::after {
 
 .btn-outline-danger {
     background: transparent;
-    border: 2px solid #dc3545;
-    color: #dc3545;
+    border: 2px solid var(--danger-500);
+    color: var(--danger-500);
     font-size: 12px;
     padding: 8px 15px;
 }
