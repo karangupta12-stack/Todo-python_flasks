@@ -3,79 +3,142 @@
 {% block title %}About{% endblock title %}
 
 {% block body %}
+<div class="container about-container">
+    <!-- Hero Section -->
+    <section class="about-hero">
+        <h1>About MyTodo</h1>
+        <p>A simple, elegant, and powerful task management application designed to help you stay organized and boost your productivity every day.</p>
+    </section>
 
+    <!-- Content Grid -->
+    <div class="about-grid">
+        <!-- Features Card -->
+        <div class="about-card">
+            <h3><span class="card-icon">⚡</span> Features</h3>
+            <ul class="about-features-list">
+                <li>Add new todos with titles and descriptions</li>
+                <li>Edit and update existing tasks</li>
+                <li>Delete completed or unnecessary items</li>
+                <li>Search through your todo list</li>
+                <li>Automatic timestamp tracking</li>
+                <li>Clean and intuitive interface</li>
+                <li>Responsive design for all devices</li>
+            </ul>
+        </div>
 
-    <!-- Main Content -->
-    <div class="container" >
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <h1>About MyTodo</h1>
-            <p>A simple, elegant, and powerful task management application designed to help you stay organized and boost your productivity every day.</p>
-        </section>
+        <!-- How to Use Card -->
+        <div class="about-card how-to-use">
+            <h3><span class="card-icon">📋</span> How to Use</h3>
+            <p><strong>Adding Tasks:</strong> Simply fill in the todo title and description, then click Submit to add it to your list.</p>
+            <p><strong>Managing Tasks:</strong> Use the Update button to modify existing tasks or Delete to remove completed ones.</p>
+            <p><strong>Search:</strong> Use the search bar to quickly find specific todos in your list.</p>
+            <p><strong>Organization:</strong> View all your tasks in a clean table format with timestamps to track when each task was created.</p>
+        </div>
 
-        <!-- Content Grid -->
-        <div class="content-grid">
-            <!-- Features Card -->
-            <div class="card">
-                <h3><span class="card-icon">⚡</span> Features</h3>
-                <ul class="features-list">
-                    <li>Add new todos with titles and descriptions</li>
-                    <li>Edit and update existing tasks</li>
-                    <li>Delete completed or unnecessary items</li>
-                    <li>Search through your todo list</li>
-                    <li>Automatic timestamp tracking</li>
-                    <li>Clean and intuitive interface</li>
-                    <li>Responsive design for all devices</li>
-                </ul>
-            </div>
-
-            <!-- How to Use Card -->
-            <div class="card">
-                <h3><span class="card-icon">📝</span> How to Use</h3>
-                <p><strong>Adding Tasks:</strong> Simply fill in the todo title and description, then click Submit to add it to your list.</p>
-                <p><strong>Managing Tasks:</strong> Use the Update button to modify existing tasks or Delete to remove completed ones.</p>
-                <p><strong>Search:</strong> Use the search bar to quickly find specific todos in your list.</p>
-                <p><strong>Organization:</strong> View all your tasks in a clean table format with timestamps to track when each task was created.</p>
-            </div>
-
-            <!-- Technology Stack Card -->
-            <div class="card">
-                <h3><span class="card-icon">🛠️</span> Built With</h3>
-                <p>This application is built using modern web technologies:</p>
-                <div class="tech-stack">
-                    <span class="tech-badge">Python</span>
-                    <span class="tech-badge">Flask</span>
-                    <span class="tech-badge">SQLite</span>
-                    <span class="tech-badge">HTML5</span>
-                    <span class="tech-badge">CSS3</span>
-                    <span class="tech-badge">JavaScript</span>
-                </div>
-            </div>
-
-            <!-- Purpose Card -->
-            <div class="card">
-                <h3><span class="card-icon">🎯</span> Purpose</h3>
-                <p>MyTodo was created as a learning project to demonstrate web development skills with Flask framework and database management. It showcases:</p>
-                <ul class="features-list">
-                    <li>CRUD operations (Create, Read, Update, Delete)</li>
-                    <li>Database integration with SQLite</li>
-                    <li>RESTful API design principles</li>
-                    <li>Responsive web design</li>
-                    <li>Modern UI/UX practices</li>
-                </ul>
+        <!-- Technology Stack Card -->
+        <div class="about-card">
+            <h3><span class="card-icon">🛠️</span> Built With</h3>
+            <p>This application is built using modern web technologies:</p>
+            <div class="about-tech-stack">
+                <span class="about-tech-badge">Python</span>
+                <span class="about-tech-badge">Flask</span>
+                <span class="about-tech-badge">SQLite</span>
+                <span class="about-tech-badge">HTML5</span>
+                <span class="about-tech-badge">CSS3</span>
+                <span class="about-tech-badge">JavaScript</span>
             </div>
         </div>
 
-        <!-- Call to Action -->
-        <section class="cta-section">
-            <h2>Ready to Get Organized?</h2>
-            <p>Start managing your tasks efficiently with MyTodo. Simple, fast, and reliable.</p>
-            <a href="/" class="cta-button">Start Using MyTodo</a>
-            
-            <div class="version-info">
-                <strong>Your simple and reliable task manager</strong> MyTodo <br>
-                Developed with ❤️ using Python Flask
-            </div>
-        </section>
+        <!-- Purpose Card -->
+        <div class="about-card purpose-section">
+            <h3><span class="card-icon">🎯</span> Purpose</h3>
+            <p>MyTodo was created as a learning project to demonstrate web development skills with Flask framework and database management. It showcases:</p>
+            <ul class="about-features-list">
+                <li>CRUD operations (Create, Read, Update, Delete)</li>
+                <li>Database integration with SQLite</li>
+                <li>RESTful API design principles</li>
+                <li>Responsive web design</li>
+                <li>Modern UI/UX practices</li>
+            </ul>
+        </div>
+
+        <!-- Security & Authentication Card -->
+        <div class="about-card">
+            <h3><span class="card-icon">🔐</span> Security</h3>
+            <p>Your data security and privacy are our top priorities:</p>
+            <ul class="about-features-list">
+                <li>Secure user authentication system</li>
+                <li>Password encryption and hashing</li>
+                <li>Email verification for account safety</li>
+                <li>Session management and security</li>
+                <li>Password reset functionality</li>
+            </ul>
+        </div>
+
+        <!-- User Experience Card -->
+        <div class="about-card">
+            <h3><span class="card-icon">✨</span> Experience</h3>
+            <p>Designed with user experience in mind:</p>
+            <ul class="about-features-list">
+                <li>Intuitive and clean user interface</li>
+                <li>Fast and responsive performance</li>
+                <li>Mobile-friendly responsive design</li>
+                <li>Smooth animations and transitions</li>
+                <li>Accessible for all users</li>
+            </ul>
+        </div>
     </div>
+
+    <!-- Call to Action -->
+    <section class="about-cta">
+        <h2>Ready to Get Organized?</h2>
+        <p>Start managing your tasks efficiently with MyTodo. Simple, fast, and reliable.</p>
+        {% if session.user_id %}
+            <a href="/" class="about-cta-button">Go to Your Todos</a>
+        {% else %}
+            <a href="{{ url_for('register') }}" class="about-cta-button">Get Started Today</a>
+        {% endif %}
+        
+        <div class="about-version-info">
+            <strong>Your simple and reliable task manager</strong><br>
+            Developed with ❤️ using Python Flask<br>
+            <small>Secure • Fast • Reliable</small>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <div class="about-grid" style="margin-top: 3rem;">
+        <div class="about-card1" style="text-align: center;">
+            <h3><span class="card-icon">📊</span> Features at a Glance</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">100%</div>
+                    <div style="font-size: 0.875rem; color: var(--gray-600);">Responsive</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--success);">Secure</div>
+                    <div style="font-size: 0.875rem; color: var(--gray-600);">Authentication</div>
+                </div>
+                <div>
+                    <div style="font-size: 2rem; font-weight: bold; color: var(--secondary);">Fast</div>
+                    <div style="font-size: 0.875rem; color: var(--gray-600);">Performance</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-card1" style="text-align: center;">
+            <h3><span class="card-icon1">🚀</span> Getting Started</h3>
+            <div style="margin-top: 1.5rem;">
+                {% if not session.user_id %}
+                    <p style="margin-bottom: 1rem;">Ready to boost your productivity?</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-primary" style="margin-right: 0.5rem;">Create Account</a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-primary">Login</a>
+                {% else %}
+                    <p style="margin-bottom: 1rem;">Welcome back! Continue managing your tasks.</p>
+                    <a href="/" class="btn btn-primary">View Your Todos</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock body %}

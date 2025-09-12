@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}Register{% endblock title %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="text-center">Create Your MyTodo Account</h4>
+                </div>
+                <div class="card-body">
+                  
+                    <form method="POST" id="registerForm">
+                        <!-- Account Information -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6><i class="fas fa-user me-2"></i>Account Information</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="email" name="email" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">Password</label>
+                                            <input type="password" class="form-control" id="password" name="password" minlength="6" required>
+                                            <div class="form-text">Password must be at least 6 characters long.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" minlength="6" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Email Configuration (Optional) -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6><i class="fas fa-envelope-open-text me-2"></i>Email Configuration (Optional)</h6>
+                                <small class="text-muted">Configure your email to send verification codes. You can skip this and configure later.</small>
+                            </div>
+                            <div class="card-body" id="emailConfigSection">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="enableEmailConfig" onchange="toggleEmailConfig()">
+                                    <label class="form-check-label" for="enableEmailConfig">
+                                        <strong>Setup email configuration now</strong>
+                                        <br><small class="text-muted">This allows automatic sending of verification emails</small>
+                                    </label>
+                                </div>
+
+                                <div id="emailFields" style="display: none;">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="smtp_provider" class="form-label">Email Provider</label>
+                                                <select class="form-control" id="smtp_provider" onchange="updateProviderSettings()">
+                                                    <option value="">Select Provider</option>
+                                                    <option value="gmail">Gmail</option>
+                                                    <option value="outlook">Outlook/Hotmail</option>
+                                                    <option value="yahoo">Yahoo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="smtp_username" class="form-label">Email Address (for sending)</label>
+                                                <input type="email" class="form-control" id="smtp_username" name="smtp_username" placeholder="your-email@gmail.com">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="smtp_password" class="form-label">App Password</label>
+                                        <input type="password" class="form-control" id="smtp_password" name="smtp_password" placeholder="Enter your app-specific password">
+                                        <div class="form-text">
+                                            <small id="providerInstructions">Select a provider above to see specific instructions.</small>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <small>
+                                            <strong>Note:</strong> This email will be used to send verification codes to new users. 
+                                            You can use a different email than your account email.
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-user-plus me-2"></i>Create Account
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <hr>
+                    <div class="text-center">
+                        <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function toggleEmailConfig() {
+    const checkbox = document.getElementById('enableEmailConfig');
+    const emailFields = document.getElementById('emailFields');
+    const smtpUsername = document.getElementById('smtp_username');
+    const smtpPassword = document.getElementById('smtp_password');
+    
+    if (checkbox.checked) {
+        emailFields.style.display = 'block';
+        smtpUsername.required = true;
+        smtpPassword.required = true;
+    } else {
+        emailFields.style.display = 'none';
+        smtpUsername.required = false;
+        smtpPassword.required = false;
+        // Clear values
+        smtpUsername.value = '';
+        smtpPassword.value = '';
+    }
+}
+
+function updateProviderSettings() {
+    const provider = document.getElementById('smtp_provider').value;
+    const instructions = document.getElementById('providerInstructions');
+    
+    const providerInstructions = {
+        'gmail': 'For Gmail, you need to enable 2-Step Verification and generate an App Password. Visit Google Account settings to set this up.',
+        'outlook': 'For Outlook, generate an App Password from your Microsoft Account security settings.',
+        'yahoo': 'For Yahoo Mail, generate an App Password from Account Security settings.',
+        '': 'Select a provider above to see specific instructions.'
+    };
+    
+    instructions.textContent = providerInstructions[provider];
+}
+</script>
+{% endblock body %}
