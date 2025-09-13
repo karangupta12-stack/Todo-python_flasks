@@ -9,7 +9,10 @@ import os
 from itsdangerous import URLSafeTimedSerializer
 from email.mime.text import MIMEText
 import smtplib
+from dotenv import load_dotenv  
 
+
+load_dotenv()  
 
 app = Flask(__name__)
 # --- Configuration ---
