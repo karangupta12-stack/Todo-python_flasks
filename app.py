@@ -11,6 +11,7 @@ from email.mime.text import MIMEText
 import smtplib
 from dotenv import load_dotenv  
 
+from flask_migrate import Migrate
 
 load_dotenv()  
 
@@ -33,6 +34,7 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.co
 
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 mail = Mail(app)
 
 
@@ -92,7 +94,7 @@ class OTP(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), nullable=False)
     otp_code = db.Column(db.String(6), nullable=False)
-    created_creates = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
     expires_at = db.Column(db.DateTime, nullable=False)
     is_used = db.Column(db.Boolean, default=False)
 
@@ -218,7 +220,7 @@ def register():
     if request.method == 'POST':
         email = request.form['email'].lower().strip()
         password = request.form['password']
-        print(f"User password: {password}")
+        # print(f"User password: {password}")
         confirm_password = request.form['confirm_password']
         
         # Validation
@@ -282,7 +284,7 @@ def verify_email():
             email=email, 
             otp_code=otp_code, 
             is_used=False
-        ).filter(OTP.expires_at > datetime.utcnow()).first()
+        ).filter(OTP.expires_at > datetime.now(UTC)).first()
         
         if otp:
             # Mark OTP as used
