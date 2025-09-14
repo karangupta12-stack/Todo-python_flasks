@@ -10,7 +10,6 @@ from itsdangerous import URLSafeTimedSerializer
 from email.mime.text import MIMEText
 import smtplib
 from dotenv import load_dotenv  
-
 from flask_migrate import Migrate
 
 load_dotenv()  
