@@ -18,7 +18,12 @@ app = Flask(__name__)
 # --- Configuration ---
 # It's crucial to use environment variables for sensitive data.
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-super-secret-key-for-dev')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://flaskuser:todo2114@localhost:5432/tododb')
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://flaskuser:todo2114@localhost:5432/tododb')
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -33,8 +38,8 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.co
 
 
 db = SQLAlchemy(app)
-print("ENV SQLALCHEMY_DATABASE_URI:", os.environ.get('SQLALCHEMY_DATABASE_URI'))
-print("👉 Using database:", app.config["SQLALCHEMY_DATABASE_URI"])
+# print("ENV SQLALCHEMY_DATABASE_URI:", os.environ.get('SQLALCHEMY_DATABASE_URI'))
+# print("👉 Using database:", app.config["SQLALCHEMY_DATABASE_URI"])
 
 migrate = Migrate(app, db)
 mail = Mail(app)
