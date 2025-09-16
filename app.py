@@ -18,7 +18,7 @@ app = Flask(__name__)
 # --- Configuration ---
 # It's crucial to use environment variables for sensitive data.
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default-super-secret-key-for-dev')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///todo.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI', 'postgresql://flaskuser:todo2114@localhost:5432/tododb')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
@@ -33,12 +33,16 @@ app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', app.co
 
 
 db = SQLAlchemy(app)
+print("ENV SQLALCHEMY_DATABASE_URI:", os.environ.get('SQLALCHEMY_DATABASE_URI'))
+print("👉 Using database:", app.config["SQLALCHEMY_DATABASE_URI"])
+
 migrate = Migrate(app, db)
 mail = Mail(app)
 
 
 # User Model
 class User(db.Model):
+    __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(200), nullable=False)
@@ -79,11 +83,12 @@ class User(db.Model):
 
 # Updated Todo Model with user relationship
 class Todo(db.Model):
+    __tablename__ = 'todos' 
     Sno = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), nullable=False)
     description = db.Column(db.String(100), nullable=False)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC))
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
     def __repr__(self) -> str:
         return f"{self.Sno} - {self.title}"
@@ -480,6 +485,6 @@ def email_setup():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
     app.run(debug=False)
