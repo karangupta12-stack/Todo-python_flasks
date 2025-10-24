@@ -1,16 +1,19 @@
 from flask import Flask, render_template, request, redirect, jsonify, session, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail, Message
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta, UTC
 import random
 import string
 import os
 from itsdangerous import URLSafeTimedSerializer
-from email.mime.text import MIMEText
-import smtplib
+# from flask_mail import Mail, Message
+# from email.mime.text import MIMEText
+# import smtplib
 from dotenv import load_dotenv  
 from flask_migrate import Migrate
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail as SendGridMail
 
 load_dotenv()  
 
@@ -42,7 +45,7 @@ db = SQLAlchemy(app)
 # print("👉 Using database:", app.config["SQLALCHEMY_DATABASE_URI"])
 
 migrate = Migrate(app, db)
-mail = Mail(app)
+# mail = Mail(app)
 
 
 # User Model
@@ -122,82 +125,147 @@ def generate_otp():
     return ''.join(random.choices(string.digits, k=6))
 
 
+# def send_otp_email(email, otp_code, user_config=None):
+#     """Sends an OTP email using either default or user-provided SMTP settings."""
+#     subject = 'Your MyTodo Verification Code'
+#     html_body = render_template('emails/otp_template.html', otp_code=otp_code)
+
+#     # Use user-specific configuration if provided
+#     if user_config:
+#         sender_email = user_config.get('username')
+#         password = user_config.get('password')
+        
+#         if not sender_email or not password:
+#             return False, "User's SMTP username or password is not configured."
+
+#         # Create the email message
+#         msg = MIMEText(html_body, 'html')
+#         msg['Subject'] = subject
+#         msg['From'] = sender_email
+#         msg['To'] = email
+
+#         try:
+#             # Connect to the server and send the email
+#             server = smtplib.SMTP(user_config.get('server'), user_config.get('port'))
+#             if user_config.get('use_tls', True):
+#                 server.starttls()
+#             server.login(sender_email, password)
+#             server.sendmail(sender_email, [email], msg.as_string())
+#             server.quit()
+#             print(f"Email sent successfully to {email} using user's custom SMTP.")
+#             return True, None
+#         except Exception as e:
+#             error_msg = str(e)
+#             print(f"Failed to send email with custom settings: {error_msg}")
+#             return False, error_msg
+#     else: # Use default app config
+#         sender = app.config.get('MAIL_DEFAULT_SENDER')
+
+#         if not sender:
+#             return False, "Default sender email is not configured in the app."
+
+#         msg = Message(subject=subject, recipients=[email], html=html_body, sender=sender)
+
+#         try:
+#             mail.send(msg)
+#             print(f"Email sent successfully to {email} using default app settings.")
+#             return True, None
+#         except Exception as e:
+#             error_msg = str(e)
+#             print(f"Failed to send email with default settings: {error_msg}")
+#             return False, error_msg
+
+
+
+
 def send_otp_email(email, otp_code, user_config=None):
-    """Sends an OTP email using either default or user-provided SMTP settings."""
+    """Sends an OTP email using SendGrid Web API."""
     subject = 'Your MyTodo Verification Code'
     html_body = render_template('emails/otp_template.html', otp_code=otp_code)
 
-    # Use user-specific configuration if provided
-    if user_config:
-        sender_email = user_config.get('username')
-        password = user_config.get('password')
-        
-        if not sender_email or not password:
-            return False, "User's SMTP username or password is not configured."
+    # Get API key and sender from environment variables
+    api_key = os.environ.get('MAIL_PASSWORD') # Re-using MAIL_PASSWORD as SendGrid Key
+    sender_email = os.environ.get('MAIL_DEFAULT_SENDER')
 
-        # Create the email message
-        msg = MIMEText(html_body, 'html')
-        msg['Subject'] = subject
-        msg['From'] = sender_email
-        msg['To'] = email
+    if not api_key or not sender_email:
+        print("Failed to send email: MAIL_PASSWORD (API Key) or MAIL_DEFAULT_SENDER is not set.")
+        return False, "Email service not configured."
 
-        try:
-            # Connect to the server and send the email
-            server = smtplib.SMTP(user_config.get('server'), user_config.get('port'))
-            if user_config.get('use_tls', True):
-                server.starttls()
-            server.login(sender_email, password)
-            server.sendmail(sender_email, [email], msg.as_string())
-            server.quit()
-            print(f"Email sent successfully to {email} using user's custom SMTP.")
-            return True, None
-        except Exception as e:
-            error_msg = str(e)
-            print(f"Failed to send email with custom settings: {error_msg}")
-            return False, error_msg
-    else: # Use default app config
-        sender = app.config.get('MAIL_DEFAULT_SENDER')
+    message = SendGridMail(
+        from_email=sender_email,
+        to_emails=email,
+        subject=subject,
+        html_content=html_body
+    )
 
-        if not sender:
-            return False, "Default sender email is not configured in the app."
+    try:
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+        print(f"Email sent via SendGrid, status code: {response.status_code}")
+        return True, None
+    except Exception as e:
+        error_msg = str(e)
+        print(f"Failed to send email with SendGrid: {error_msg}")
+        return False, error_msg
 
-        msg = Message(subject=subject, recipients=[email], html=html_body, sender=sender)
 
-        try:
-            mail.send(msg)
-            print(f"Email sent successfully to {email} using default app settings.")
-            return True, None
-        except Exception as e:
-            error_msg = str(e)
-            print(f"Failed to send email with default settings: {error_msg}")
-            return False, error_msg
+# def send_password_reset_email(user):
+#     """Sends a password reset email."""
+#     token = user.get_reset_token()
+#     subject = 'Password Reset Request for MyTodo'
+#     reset_url = url_for('reset_password', token=token, _external=True)
+#     html_body = render_template('emails/reset_password_template.html', reset_url=reset_url)
+
+#     # Use default app config for sending reset emails
+#     sender = app.config['MAIL_DEFAULT_SENDER']
+
+#     if not sender:
+#         print("Email sending failed: MAIL_DEFAULT_SENDER is not configured.")
+#         return False, "Sender email not configured."
+
+#     msg = Message(subject=subject, recipients=[user.email], html=html_body, sender=sender)
+
+#     try:
+#         mail.send(msg)
+#         print(f"Password reset email sent successfully to {user.email}")
+#         return True, None
+#     except Exception as e:
+#         error_msg = str(e)
+#         print(f"Failed to send password reset email to {user.email}: {error_msg}")
+#         return False, error_msg
 
 
 def send_password_reset_email(user):
-    """Sends a password reset email."""
+    """Sends a password reset email using SendGrid Web API."""
     token = user.get_reset_token()
     subject = 'Password Reset Request for MyTodo'
     reset_url = url_for('reset_password', token=token, _external=True)
     html_body = render_template('emails/reset_password_template.html', reset_url=reset_url)
 
-    # Use default app config for sending reset emails
-    sender = app.config['MAIL_DEFAULT_SENDER']
+    # Get API key and sender from environment variables
+    api_key = os.environ.get('MAIL_PASSWORD') # Re-using MAIL_PASSWORD as SendGrid Key
+    sender_email = os.environ.get('MAIL_DEFAULT_SENDER')
 
-    if not sender:
-        print("Email sending failed: MAIL_DEFAULT_SENDER is not configured.")
-        return False, "Sender email not configured."
+    if not api_key or not sender_email:
+        print("Failed to send email: MAIL_PASSWORD (API Key) or MAIL_DEFAULT_SENDER is not set.")
+        return False, "Email service not configured."
 
-    msg = Message(subject=subject, recipients=[user.email], html=html_body, sender=sender)
+    message = SendGridMail(
+        from_email=sender_email,
+        to_emails=user.email,
+        subject=subject,
+        html_content=html_body
+    )
 
     try:
-        mail.send(msg)
-        print(f"Password reset email sent successfully to {user.email}")
+        sg = SendGridAPIClient(api_key)
+        response = sg.send(message)
+        print(f"Password reset email sent via SendGrid, status code: {response.status_code}")
         return True, None
     except Exception as e:
         error_msg = str(e)
-        print(f"Failed to send password reset email to {user.email}: {error_msg}")
+        print(f"Failed to send password reset email with SendGrid: {error_msg}")
         return False, error_msg
-
 
 # -----------------------------------------------------------------Routes----------------------------------------------------
 @app.route('/', methods=['GET', 'POST'])
