@@ -61,8 +61,8 @@ class User(db.Model):
      # Email configuration fields
     smtp_server = db.Column(db.String(100), default='smtp.gmail.com')
     smtp_port = db.Column(db.Integer, default=587)
-    smtp_username = db.Column(db.String(120), nullable=True)  # Email for sending
-    smtp_password = db.Column(db.String(200), nullable=True)  # App password
+    smtp_username = db.Column(db.String(120), nullable=True)  
+    smtp_password = db.Column(db.String(200), nullable=True)  
     use_tls = db.Column(db.Boolean, default=True)
     
     
@@ -183,8 +183,7 @@ def send_otp_email(email, otp_code, user_config=None):
     subject = 'Your MyTodo Verification Code'
     html_body = render_template('emails/otp_template.html', otp_code=otp_code)
 
-    # Get API key and sender from environment variables
-    api_key = os.environ.get('MAIL_PASSWORD') # Re-using MAIL_PASSWORD as SendGrid Key
+    api_key = os.environ.get('MAIL_PASSWORD') 
     sender_email = os.environ.get('MAIL_DEFAULT_SENDER')
 
     if not api_key or not sender_email:
@@ -242,7 +241,6 @@ def send_password_reset_email(user):
     reset_url = url_for('reset_password', token=token, _external=True)
     html_body = render_template('emails/reset_password_template.html', reset_url=reset_url)
 
-    # Get API key and sender from environment variables
     api_key = os.environ.get('MAIL_PASSWORD') # Re-using MAIL_PASSWORD as SendGrid Key
     sender_email = os.environ.get('MAIL_DEFAULT_SENDER')
 
@@ -297,7 +295,6 @@ def register():
     if request.method == 'POST':
         email = request.form['email'].lower().strip()
         password = request.form['password']
-        # print(f"User password: {password}")
         confirm_password = request.form['confirm_password']
         
         # Validation
@@ -317,14 +314,13 @@ def register():
 # Create new user
         user = User(email=email)
         user.set_password(password)
-        # user.generate_verification_token()
+        
         
         db.session.add(user)
         db.session.commit()
         
         # Generate and send OTP
         otp_code = generate_otp()
-        # from datetime import timedelta
         otp = OTP(
             email=email,
             otp_code=otp_code,
@@ -333,7 +329,6 @@ def register():
         db.session.add(otp)
         db.session.commit()
         
-        # Try to send email, but don't fail if email service isn't configured
         email_sent = send_otp_email(email, otp_code)
         if not email_sent:
             flash(f'Account created! Email service not configured. Use OTP: {otp_code}', 'info')
